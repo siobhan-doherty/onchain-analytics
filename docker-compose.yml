@@ -1,0 +1,7 @@
+services:
+    dbt:
+        build: .
+        environment: 
+            - DUNE_API_KEY=${DUNE_API_KEY}
+        volumes:
+            - ./target:/app/target

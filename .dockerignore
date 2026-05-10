@@ -1,0 +1,9 @@
+.git
+.gitignore
+.env
+README.md
+*.log
+*.pyc
+__pycache__
+target/
+dbt_packages/

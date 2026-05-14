@@ -12,3 +12,8 @@ env/
 # Environment
 .env
 .DS_Store
+
+# Local data
+data/
+*.duckdb
+*.csv

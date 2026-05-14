@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: dune
+    description: "Raw DEX trades exported from the Dune API to a local CSV file."
+    tables:
+      - name: raw_dex_trades
+        description: "Raw DEX trades extracted from Dune and stored locally as CSV."
+        config:
+          external_location: "read_csv_auto('/app/data/raw_dex_trades.csv', header=true)"

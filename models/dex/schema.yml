@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: stg_dex_trades
+    description: "Typed and lightly cleaned staging model for DEX trades extracted from Dune."
+    columns:
+      - name: block_time
+        tests:
+          - not_null
+      - name: blockchain
+        tests:
+          - not_null
+      - name: project
+        tests:
+          - not_null
+
+  - name: fct_dex_trades
+    description: "Analytics-ready DEX trades fact table filtered to valid positive USD amounts."
+    columns:
+      - name: block_time
+        description: "UTC timestamp of the trade."
+        tests:
+          - not_null
+      - name: blockchain
+        description: "Blockchain where the trade occurred."
+        tests:
+          - not_null
+      - name: project
+        description: "DEX protocol name."
+        tests:
+          - not_null
+      - name: version
+        description: "Protocol version."
+      - name: token_bought_symbol
+        description: "Symbol of the token bought."
+      - name: token_sold_symbol
+        description: "Symbol of the token sold."
+      - name: amount_usd
+        description: "Trade notional value in USD."
+        tests:
+          - not_null
+      - name: taker
+        description: "Taker wallet address."
+      - name: maker
+        description: "Maker wallet address."

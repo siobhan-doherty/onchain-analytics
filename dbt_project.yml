@@ -1,9 +1,6 @@
-name: 'dbt_template'
-version: '1.0.0'
-profile: 'dbt_template'
-
-flags:
-  require_certificate_validation: true
+name: "onchain_analytics"
+version: "1.0.0"
+profile: "onchain_analytics"
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -17,5 +14,9 @@ clean-targets:
   - "dbt_packages"
 
 models:
-  dbt_template:
-    +materialized: table
+  onchain_analytics:
+    +persist_docs:
+      relation: true
+      columns: true
+    dex:
+      +materialized: table

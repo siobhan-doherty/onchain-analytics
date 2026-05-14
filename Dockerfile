@@ -1,12 +1,21 @@
 FROM python:3.11-slim
 
-# install git, required for dbt packages
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-RUN pip install dbt-core dbt-trino
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir \
+    dbt-duckdb \
+    requests
 
 WORKDIR /app
 COPY . .
+
 RUN dbt deps
 
-CMD [ "dbt", "run"]
+CMD ["bash", "-lc", "python fetch_dex_trades.py && dbt build --profiles-dir /app"]

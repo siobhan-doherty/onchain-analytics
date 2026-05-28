@@ -3,6 +3,6 @@ onchain_analytics:
   outputs:
     dev:
       type: duckdb
-      path: /app/data/onchain.duckdb
+      path: /app/data/dex_analytics.duckdb
       schema: main
       threads: 4

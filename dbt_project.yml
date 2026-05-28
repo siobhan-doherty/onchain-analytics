@@ -18,5 +18,3 @@ models:
     +persist_docs:
       relation: true
       columns: true
-    dex:
-      +materialized: table

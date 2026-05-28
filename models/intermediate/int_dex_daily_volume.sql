@@ -1,7 +1,7 @@
-{{ config(materialized="view") }}
+{{ config(materialized="table") }}
 
 SELECT
-    DATE_TRUNC("day", block_time) AS trade_date,
+    DATE_TRUNC('day', block_time) AS trade_date,
     blockchain,
     project,
     COUNT(*) AS number_of_trades,

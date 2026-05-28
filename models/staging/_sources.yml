@@ -2,7 +2,8 @@ version: 2
 
 sources:
   - name: dune
-    description: "Raw data extracted from Dune API and stored in DuckDB."
+    description: "Raw DEX trades from Dune API loaded into DuckDB."
+    schema: main
     tables:
       - name: raw_dex_trades
         description: "Latest 10k DEX trades from dex.trades (last 7 days)."
@@ -11,6 +12,8 @@ sources:
             description: "UTC timestamp of the block"
           - name: tx_hash
             description: "Transaction hash"
+          - name: evt_index
+            description: "Event index within transaction, unique per leg"
           - name: blockchain
             description: "Blockchain name"
           - name: project

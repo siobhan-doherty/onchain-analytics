@@ -2,6 +2,8 @@
 
 select
     block_time,
+    tx_hash,
+    evt_index,
     blockchain,
     project,
     version,

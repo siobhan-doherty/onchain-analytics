@@ -1,3 +1,4 @@
 dbt-duckdb
 pandas
+dune-client
 requests

@@ -9,13 +9,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir \
-    dbt-duckdb \
-    requests
+# first copy requirements for better caching
+COPY requirements.txt .
+
+# install all Python deps from requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 WORKDIR /app
 COPY . .
 
 RUN dbt deps
 
-CMD ["bash", "-lc", "python fetch_dex_trades.py && dbt build --profiles-dir /app"]
+CMD ["bash", "-c", "python fetch_dex_trades.py && dbt build --profiles-dir /app"]

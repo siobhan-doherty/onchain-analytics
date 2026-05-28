@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: fct_dex_trades
+    description: "Fact table with one row per DEX trade, filtered to positive USD amount."
+    columns:
+      - name: block_time
+        description: "UTC timestamp of the trade"
+        tests:
+          - not_null
+      - name: tx_hash
+        description: "Unique transaction hash"
+        tests:
+          - not_null
+          - unique
+      - name: amount_usd
+        description: "Trade value in USD"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+            min_value: 0
+
+  - name: dim_tokens
+    description: "Dimension table of unique token symbols traded."
+    columns:
+      - name: token_id
+        description: "Surrogate key"
+        tests:
+          - unique
+          - not_null
+      - name: token_symbol
+        description: "Token symbol, for example ETH, USDC"
+        tests:
+          - not_null

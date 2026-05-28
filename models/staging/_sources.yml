@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: dune
+    description: "Raw data extracted from Dune API and stored in DuckDB."
+    tables:
+      - name: raw_dex_trades
+        description: "Latest 10k DEX trades from dex.trades (last 7 days)."
+        columns:
+          - name: block_time
+            description: "UTC timestamp of the block"
+          - name: tx_hash
+            description: "Transaction hash"
+          - name: blockchain
+            description: "Blockchain name"
+          - name: project
+            description: "DEX project name"
+          - name: version
+            description: "DEX version"
+          - name: token_bought_symbol
+            description: "Symbol of token bought"
+          - name: token_sold_symbol
+            description: "Symbol of token sold"
+          - name: amount_usd
+            description: "USD value of the trade"
+          - name: taker
+            description: "Address that bought tokens"
+          - name: maker
+            description: "Address that sold tokens"

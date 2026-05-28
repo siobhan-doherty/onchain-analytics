@@ -2,6 +2,7 @@
 
 select
     block_time,
+    tx_hash,
     blockchain,
     project,
     version,
@@ -10,6 +11,6 @@ select
     amount_usd,
     taker,
     maker
-from {{ ref("stg_dex_trades") }}
+from {{ source("dune", "raw_dex_trades") }}
 where amount_usd is not null
     and amount_usd > 0

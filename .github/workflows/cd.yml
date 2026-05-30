@@ -1,0 +1,39 @@
+name: Deploy dbt Docs to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "models/**"
+      - "dbt_project.yml"
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+    if: github.ref == "refs/heads/main"
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          dbt deps
+
+      - name: Fetch latest data
+        run: python fetch_dex_trades.py
+        env:
+          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
+
+      - name: Generate dbt docs
+        run: dbt docs generate
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target
+          destination_dir: docs

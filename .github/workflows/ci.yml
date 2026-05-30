@@ -1,0 +1,52 @@
+name: dbt CI Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "models/**"
+      - "macros/**"
+      - "tests/**"
+      - "dbt_project.yml"
+      - "fetch_dex_trades.py"
+  push:
+    branches: [main]
+
+jobs:
+  dbt-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          dbt deps
+
+      - name: Fetch fresh data from Dune API
+        run: python fetch_dex_trades.py
+        env:
+          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
+          DUNE_QUERY_ID: 7494336
+
+      - name: Run dbt models
+        run: dbt run
+
+      - name: Run data tests
+        run: dbt test
+      
+      - name: Generate documentation
+        run: dbt docs generate
+
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-docs
+          path: target/

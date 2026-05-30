@@ -6,6 +6,7 @@ on:
     paths:
       - "models/**"
       - "dbt_project.yml"
+      - "fetch_dex_trades.py"
 
 jobs:
   deploy-docs:
@@ -23,10 +24,14 @@ jobs:
           pip install -r requirements.txt
           dbt deps
 
+      - name: Create data directory
+        run: mkdir -p data
+
       - name: Fetch latest data
         run: python fetch_dex_trades.py
         env:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
+          DUNE_QUERY_ID: 7494336
 
       - name: Generate dbt docs
         run: dbt docs generate

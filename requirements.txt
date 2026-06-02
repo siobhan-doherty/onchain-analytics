@@ -1,4 +1,6 @@
 dbt-duckdb
 pandas
 dune-client
-requests
+dagster
+dagster-dbt
+dagster-webserver

@@ -14,3 +14,17 @@ services:
             interval: 30s
             timeout: 10s
             retries: 3
+
+    dagster:
+        build: .
+        command: sh -c "dbt deps && dbt parse && dagster-webserver -f /app/dagster/dagster_assets.py -h 0.0.0.0 -p 3000"
+        ports:
+            - "3000:3000"
+        environment:
+            DUNE_API_KEY: ${DUNE_API_KEY}
+            DUNE_QUERY_ID: ${DUNE_QUERY_ID:-7494336}
+            DAGSTER_DBT_PARSE_PROJECT_ON_LOAD: "1"
+        volumes:
+            - ./data:/app/data
+            - ./target:/app/target
+            - ./logs:/app/logs

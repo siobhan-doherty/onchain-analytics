@@ -9,11 +9,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# first copy requirements for better caching
+# copy requirements first for better caching
 COPY requirements.txt .
 
 # install all Python deps from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade dagster dagster-dbt dagster-webserver
 
 WORKDIR /app
 COPY . .

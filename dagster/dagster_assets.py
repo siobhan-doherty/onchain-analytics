@@ -1,13 +1,28 @@
-import os
+import subprocess
 from dagster import job, op, ScheduleDefinition, Definitions
+
 
 @op
 def run_fetch_data():
-    os.system("python /app/fetch_dex_trades.py")
+    result = subprocess.run(
+        ["python", "/app/fetch_dex_trades.py"],
+        capture_output = True,
+        text = True
+    )
+    if result.returncode != 0:
+        raise Exception(f"Data fetch failed: {result.stderr}")
+    return result.stdout
 
 @op
 def run_dbt_build():
-    os.system("dbt build --profiles-dir /app")
+    result = subprocess.run(
+        ["dbt", "build", "--profiles-dir", "/app"],
+        capture_output = True,
+        text = True
+    )
+    if result.returncode != 0:
+        raise Exception(f"dbt build failed: {result.stderr}")
+    return result.stdout
 
 @job
 def daily_pipeline():

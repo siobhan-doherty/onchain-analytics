@@ -56,7 +56,8 @@ def write_fallback_sample(path: Path) -> None:
 
 
 def main() -> None:
-    RAW_DEX_TRADES_CSV_PATH.parent.mkdir(parents = True, exist_ok = True)
+    script_dir = Path(__file__).parent
+    RAW_DEX_TRADES_CSV_PATH = script_dir / "data" / "raw_dex_trades.csv"
 
     try:
         csv_data = fetch_from_dune(DUNE_QUERY_ID)

@@ -1,4 +1,4 @@
-{{ config(materialized="table") }}
+{{ config(materialized = "table") }}
 
 SELECT
     DATE_TRUNC('day', block_time) AS trade_date,

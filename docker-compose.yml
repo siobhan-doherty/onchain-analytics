@@ -21,10 +21,42 @@ services:
         ports:
             - "3000:3000"
         environment:
+            DAGSTER_HOME: /opt/dagster/dagster_home
             DUNE_API_KEY: ${DUNE_API_KEY}
             DUNE_QUERY_ID: ${DUNE_QUERY_ID:-7494336}
-            DAGSTER_DBT_PARSE_PROJECT_ON_LOAD: "1"
         volumes:
             - ./data:/app/data
             - ./target:/app/target
             - ./logs:/app/logs
+            - ./dagster.yaml:/opt/dagster/dagster_home/dagster.yaml
+        depends_on:
+            - postgres   # array format
+
+    dagster-daemon:
+        build: .
+        command: dagster-daemon run
+        environment:
+            DAGSTER_HOME: /opt/dagster/dagster_home
+            DUNE_API_KEY: ${DUNE_API_KEY}
+            DUNE_QUERY_ID: ${DUNE_QUERY_ID:-7494336}
+        volumes:
+            - ./data:/app/data
+            - ./target:/app/target
+            - ./logs:/app/logs
+            - ./dagster.yaml:/opt/dagster/dagster_home/dagster.yaml
+        depends_on:
+            - postgres
+
+    postgres:
+        image: postgres:13
+        environment:
+            POSTGRES_USER: dagster
+            POSTGRES_PASSWORD: dagster
+            POSTGRES_DB: dagster
+        volumes:
+            - ./postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U dagster -d dagster"]
+            interval: 10s
+            timeout: 5s
+            retries: 5

@@ -5,7 +5,6 @@
 A production-grade analytics pipeline for DEX trading data, built with Dune API, DuckDB, dbt & Dagster.
 
 ## Architecture
-
 ```mermaid
 flowchart LR
     Dune[Dune Analytics API] -->|Python Script| DuckDB[(DuckDB<br/>Data Warehouse)]
@@ -50,6 +49,23 @@ docker compose up --build
 open http://localhost:3000
 ```
 
+## Project Structure
+```bash
+models/
+├── staging/
+│   └── stg_dex_trades.sql              # Light cleaning, casting, renaming
+├── intermediate/
+│   └── int_dex_daily_volume.sql        # Business logic, aggregations
+└── marts/
+    ├── core/
+    │   ├── fct_dex_trades.sql          # Fact table: individual trades
+    │   ├── dim_tokens.sql              # Dimension table: token metadata
+    │   └── _core_models.yml            # Documentation & tests
+    └── defi/
+        ├── fct_dex_daily_metrics.sql   # Aggregated daily metrics
+        └── _defi_models.yml            # Documentation & tests
+```
+
 ## Documentation
 
 The dbt documentation site is automatically deployed to GitHub Pages and can be viewed [here](https://siobhan-doherty.github.io/onchain-analytics/).
@@ -74,7 +90,7 @@ SELECT
     total_volume_usd,
     number_of_trades,
     unique_traders
-FROM analytics.main.fct_dex_daily_metrics
+FROM main.fct_dex_daily_metrics
 WHERE trade_date >= CURRENT_DATE - INTERVAL '7' DAY
 ORDER BY trade_date DESC, total_volume_usd DESC
 LIMIT 20;

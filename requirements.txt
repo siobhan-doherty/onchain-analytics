@@ -4,3 +4,4 @@ dune-client
 dagster
 dagster-dbt
 dagster-webserver
+dagster-postgres

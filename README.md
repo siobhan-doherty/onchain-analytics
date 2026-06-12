@@ -1,6 +1,10 @@
 # Onchain Analytics
 
 [![dbt CI Pipeline](https://github.com/siobhan-doherty/onchain-analytics/actions/workflows/ci.yml/badge.svg)](https://github.com/siobhan-doherty/onchain-analytics/actions/workflows/ci.yml)
+[![Documentation](https://img.shields.io/badge/docs-dbt-blue)](https://siobhan-doherty.github.io/onchain-analytics/)
+[![Dagster](https://img.shields.io/badge/orchestration-Dagster-purple)](https://dagster.io/)
+[![dbt](https://img.shields.io/badge/dbt-1.11-orange)](https://getdbt.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A production-grade analytics pipeline for DEX trading data, built with Dune API, DuckDB, dbt & Dagster.
 

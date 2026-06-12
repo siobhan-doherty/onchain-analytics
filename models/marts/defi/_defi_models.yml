@@ -1,0 +1,14 @@
+version: 2
+models: 
+  - name: fct_dex_daily_metrics
+    description: ""
+    columns:
+      - name: trade_date
+        description: "Date of trades"
+        tests: [not_null]
+      - name: total_volume_usd
+        description: "Total USD volume"
+        tests: [not_null]
+      - name: unique_traders
+        description: "Distinct taker addresses"
+        tests: [not_null]

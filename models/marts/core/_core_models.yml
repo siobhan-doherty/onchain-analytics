@@ -1,0 +1,23 @@
+version: 2
+models:
+  - name: fct_dex_trades
+    description: "Fact table of individual DEX trades"
+    columns:
+      - name: tx_hash
+        description: "Transaction hash"
+        tests: [not_null]
+      - name: amount_usd
+        description: "Trade value in USD"
+        tests: [not_null]
+      - name: evt_index
+        description: "Event index inside the transaction"
+        tests: [not_null]
+  - name: dim_tokens
+    description: "Dimension table of traded tokens"
+    columns:
+      - name: token_id
+        description: "Surrogate key"
+        tests: [unique, not_null]
+      - name: token_symbol
+        description: "Token symbol"
+        tests: [not_null]

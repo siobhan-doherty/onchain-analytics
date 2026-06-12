@@ -18,3 +18,13 @@ models:
     +persist_docs:
       relation: true
       columns: true
+    staging:
+      +materialized: table
+    intermediate:
+      +materialized: table
+    marts:
+      +materialized: table
+      core:
+        +materialized: table
+      defi:
+        +materialized: table

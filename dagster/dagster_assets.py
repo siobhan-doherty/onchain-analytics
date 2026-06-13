@@ -1,3 +1,4 @@
+import os
 import subprocess
 import duckdb
 from dagster import (
@@ -7,11 +8,13 @@ from dagster import (
 from datetime import datetime
 from pathlib import Path
 
+DUCKDB_PATH = os.getenv("DUCKDB_PATH", "/app/data/dex_analytics.duckdb")
+
 
 # ops
 @op
 def check_freshness():
-    conn = duckdb.connect("/app/data/dex_analytics.duckdb")
+    conn = duckdb.connect(DUCKDB_PATH)
     result = conn.execute(
         "SELECT MAX(trade_date) FROM int_dex_daily_volume"
     ).fetchone()
@@ -41,7 +44,7 @@ def run_fetch_data():
     csv_path = "/app/data/raw_dex_trades.csv"
     if not Path(csv_path).exists():
         raise Exception(f"CSV file {csv_path} not found after fetch")
-    conn = duckdb.connect("/app/data/dex_analytics.duckdb")
+    conn = duckdb.connect(DUCKDB_PATH)
     conn.execute(f"""
         CREATE OR REPLACE TABLE raw_dex_trades AS
         SELECT * FROM read_csv_auto('{csv_path}')
@@ -81,7 +84,7 @@ daily_schedule = ScheduleDefinition(
 # sensor
 @sensor(job = daily_pipeline, minimum_interval_seconds = 3600)
 def data_freshness_sensor(context: SensorEvaluationContext):
-    conn = duckdb.connect("/app/data/dex_analytics.duckdb")
+    conn = duckdb.connect(DUCKDB_PATH)
     result = conn.execute("SELECT MAX(trade_date) FROM int_dex_daily_volume").fetchone()
     conn.close()
     last_update = result[0]

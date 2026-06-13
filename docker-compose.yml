@@ -24,6 +24,7 @@ services:
             DAGSTER_HOME: /opt/dagster/dagster_home
             DUNE_API_KEY: ${DUNE_API_KEY}
             DUNE_QUERY_ID: ${DUNE_QUERY_ID:-7494336}
+            DUCKDB_PATH: ${DUCKDB_PATH:-/app/data/dex_analytics.duckdb}
         volumes:
             - ./data:/app/data
             - ./target:/app/target
@@ -39,6 +40,7 @@ services:
             DAGSTER_HOME: /opt/dagster/dagster_home
             DUNE_API_KEY: ${DUNE_API_KEY}
             DUNE_QUERY_ID: ${DUNE_QUERY_ID:-7494336}
+            DUCKDB_PATH: ${DUCKDB_PATH:-/app/data/dex_analytics.duckdb}
         volumes:
             - ./data:/app/data
             - ./target:/app/target

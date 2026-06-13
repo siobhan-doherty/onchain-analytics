@@ -65,9 +65,7 @@ def main() -> None:
         print(f"Wrote Dune CSV to {RAW_DEX_TRADES_CSV_PATH}")
     except Exception as e:
         print(f"Dune fetch failed: {e}")
-        write_fallback_sample(RAW_DEX_TRADES_CSV_PATH)
-        print(f"Wrote fallback sample CSV to {RAW_DEX_TRADES_CSV_PATH}")
-
+        raise e
 
 if __name__ == "__main__":
     main()

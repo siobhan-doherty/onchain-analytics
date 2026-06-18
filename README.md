@@ -1,11 +1,11 @@
 # Onchain Analytics
-
-[![dbt Tests](https://img.shields.io/badge/dbt%20tests-passing-brightgreen)](https://github.com/siobhan-doherty/onchain-analytics/actions/workflows/ci.yml)
 [![dbt CI Pipeline](https://github.com/siobhan-doherty/onchain-analytics/actions/workflows/ci.yml/badge.svg)](https://github.com/siobhan-doherty/onchain-analytics/actions/workflows/ci.yml)
 [![Documentation](https://img.shields.io/badge/docs-dbt-blue)](https://siobhan-doherty.github.io/onchain-analytics/)
 [![Dagster](https://img.shields.io/badge/orchestration-Dagster-purple)](https://dagster.io/)
 [![dbt](https://img.shields.io/badge/dbt-1.11-orange)](https://getdbt.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**Live demo:** [dbt Docs](https://siobhan-doherty.github.io/onchain-analytics/)
 
 A production-grade analytics pipeline for DEX trading data, built with Dune API, DuckDB, dbt & Dagster.
 
@@ -36,23 +36,33 @@ flowchart LR
 ```
 
 ## Quick Start
-
-### 1. Clone repository & Set Dune API key
-
+### 1. Clone & setup Dune API key
 ```bash
 git clone https://github.com/siobhan-doherty/onchain-analytics.git
 cd onchain-analytics
-export DUNE_API_KEY="your_dune_api_key"
+export DUNE_API_KEY="your_dune_api_key"  # Optional: Falls back to mock data
 ```
-
-### 2. Run pipeline with Docker
+### 2. Install dependencies & fetch data
 ```bash
-docker compose up --build
+pip install -r requirements.txt
+dbt deps                    # Installs dbt packages (e.g., dbt_utils)
+python fetch_dex_trades.py  # Real Dune data, or mock if no API key
 ```
-### 3. Launch Dagster UI
+### 3. Load, transform & test
 ```bash
-open http://localhost:3000
+dbt seed --target dev
+dbt run --target dev
+dbt test --target dev
 ```
+### 4. Query results
+```bash
+duckdb data/dex_analytics.duckdb -c "SELECT * FROM fct_dex_daily_metrics LIMIT 10;"
+```
+### 5. (Optional) Spin up full Dagster stack
+```bash
+docker compose up --build    # Open http://localhost:3000
+```
+**No Dune API key?** The pipeline automatically falls back to mock data, keeping CI green!
 
 ## Project Structure
 ```bash
@@ -70,10 +80,6 @@ models/
         ├── fct_dex_daily_metrics.sql   # Aggregated daily metrics
         └── _defi_models.yml            # Documentation & tests
 ```
-
-## Documentation
-
-The dbt documentation site is automatically deployed to GitHub Pages and can be viewed [here](https://siobhan-doherty.github.io/onchain-analytics/).
 
 ## Business Questions Answered
 

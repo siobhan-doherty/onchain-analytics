@@ -30,6 +30,9 @@ jobs:
           pip install -r requirements.txt
           dbt deps
 
+      - name: Create data directory
+        run: mkdir -p data
+
       - name: Create seeds directory
         run: mkdir -p seeds
 

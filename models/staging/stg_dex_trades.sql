@@ -1,4 +1,4 @@
-{{ config(materialized="table") }}
+{{ config(materialized = "table") }}
 
 SELECT
     TRY_CAST(block_time AS TIMESTAMP) AS block_time,
@@ -9,8 +9,8 @@ SELECT
     version,
     token_bought_symbol,
     token_sold_symbol,
-    TRY_CAST(amount_usd AS DOUBLE) amount_usd,
+    TRY_CAST(amount_usd AS DOUBLE) AS amount_usd,
     taker,
     maker
-FROM {{ source("dune", "raw_dex_trades") }}
+FROM {{ ref("raw_dex_trades") }}
 WHERE TRY_CAST(amount_usd AS DOUBLE) > 0

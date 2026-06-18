@@ -45,19 +45,16 @@ def fetch_from_dune(query_id: int) -> str:
 
 
 def write_fallback_sample(path: Path) -> None:
-    """Writes minimal mock CSV to keep dbt tests passing in CI when Dune fails."""
-    mock_csv_content = """block_time,token_a_symbol,token_b_symbol,amount_a,amount_b
-2024-01-01 00:00:00,ETH,USDC,1.0,3000.0
+    """Writes minimal mock CSV matching the expected Dune schema."""
+    mock_csv_content = """block_time,tx_hash,evt_index,blockchain,project,version,token_bought_symbol,token_sold_symbol,amount_usd,taker,maker
+2024-01-01 00:00:00,0xmock,1,ethereum,uniswap,v3,ETH,USDC,1000.0,0xmock_taker,0xmock_maker
 """
     path.write_text(mock_csv_content, encoding = "utf-8")
 
 
 def main() -> None:
-    # define output path relative to script directory
     script_dir = Path(__file__).parent
-    target_path = script_dir / "data" / "raw_dex_trades.csv"
-
-    # ensure data directory exists
+    target_path = script_dir / "seeds" / "raw_dex_trades.csv"
     target_path.parent.mkdir(parents = True, exist_ok = True)
 
     try:
@@ -68,7 +65,7 @@ def main() -> None:
         print(f"Dune fetch failed: {e}")
         print("Creating mock CSV so CI can continue...")
         write_fallback_sample(target_path)
-        print(f" Mock CSV written to {target_path}. CI will pass gracefully.")
+        print(f"Mock CSV written to {target_path}. CI will pass gracefully.")
 
 
 if __name__ == "__main__":

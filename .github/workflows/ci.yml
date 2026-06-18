@@ -30,8 +30,8 @@ jobs:
           pip install -r requirements.txt
           dbt deps
 
-      - name: Create data directory
-        run: mkdir -p data
+      - name: Create seeds directory
+        run: mkdir -p seeds
 
       - name: Fetch fresh data from Dune API
         run: python fetch_dex_trades.py
@@ -39,12 +39,15 @@ jobs:
           DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
           DUNE_QUERY_ID: 7494336
 
+      - name: Load seeds into DuckDB
+        run: dbt seed --target dev
+
       - name: Run dbt models
-        run: dbt run
+        run: dbt run --target dev
 
       - name: Run data tests
-        run: dbt test
-      
+        run: dbt test --target dev
+
       - name: Generate documentation
         run: dbt docs generate
 

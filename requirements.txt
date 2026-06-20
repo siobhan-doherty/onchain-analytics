@@ -8,3 +8,4 @@ dagster-dbt>=0.23.0
 dagster-webserver>=1.7.0
 dagster-postgres>=0.23.0
 duckdb>=1.0.0
+pytest

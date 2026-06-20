@@ -70,9 +70,9 @@ def write_fallback_sample(path: Path) -> None:
     log_event("fallback_written", path = str(path))
 
 
-def main() -> None:
+def main(output_path: Path | None = None) -> None:
     script_dir = Path(__file__).parent
-    target_path = script_dir / "seeds" / "raw_dex_trades.csv"
+    target_path = output_path if output_path is not None else script_dir / "seeds" / "raw_dex_trades.csv"
     target_path.parent.mkdir(parents = True, exist_ok = True)
 
     try:

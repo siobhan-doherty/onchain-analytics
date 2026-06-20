@@ -1,7 +1,22 @@
 import os
 import time
 import requests
+import json
+import logging
 from pathlib import Path
+from datetime import datetime, timezone
+
+# configure logging
+logging.basicConfig(level = logging.INFO, format = "%(message)s")
+logger = logging.getLogger(__name__)
+
+
+def log_event(event: str, **kwargs):
+    logger.info(json.dumps({
+        "event": event,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        **kwargs
+    }))
 
 DUNE_API_KEY = os.getenv("DUNE_API_KEY")
 DUNE_QUERY_ID = int(os.getenv("DUNE_QUERY_ID", "7494336"))
@@ -14,10 +29,12 @@ def _headers() -> dict[str, str]:
 
 
 def fetch_from_dune(query_id: int) -> str:
+    log_event("fetch_start", query_id = query_id)
     execute_url = f"https://api.dune.com/api/v1/query/{query_id}/execute"
     execute_response = requests.post(execute_url, headers = _headers(), timeout = 30)
     execute_response.raise_for_status()
     execution_id = execute_response.json()["execution_id"]
+    log_event("execution_started", execution_id = execution_id)
 
     for _ in range(120):
         status_url = f"https://api.dune.com/api/v1/execution/{execution_id}/status"
@@ -33,7 +50,6 @@ def fetch_from_dune(query_id: int) -> str:
             "QUERY_STATE_EXPIRED",
         }:
             raise RuntimeError(f"Dune execution ended with state={state}")
-
         time.sleep(2)
     else:
         raise TimeoutError("Timed out waiting for Dune query execution")
@@ -41,6 +57,7 @@ def fetch_from_dune(query_id: int) -> str:
     results_url = f"https://api.dune.com/api/v1/execution/{execution_id}/results/csv"
     results_response = requests.get(results_url, headers = _headers(), timeout = 60)
     results_response.raise_for_status()
+    log_event("fetch_complete", execution_id = execution_id)
     return results_response.text
 
 
@@ -50,6 +67,7 @@ def write_fallback_sample(path: Path) -> None:
 2024-01-01 00:00:00,0xmock,1,ethereum,uniswap,v3,ETH,USDC,1000.0,0xmock_taker,0xmock_maker
 """
     path.write_text(mock_csv_content, encoding = "utf-8")
+    log_event("fallback_written", path = str(path))
 
 
 def main() -> None:
@@ -60,12 +78,10 @@ def main() -> None:
     try:
         csv_data = fetch_from_dune(DUNE_QUERY_ID)
         target_path.write_text(csv_data, encoding = "utf-8")
-        print(f"Wrote live Dune CSV to {target_path}")
+        log_event("fetch_success", path = str(target_path))
     except Exception as e:
-        print(f"Dune fetch failed: {e}")
-        print("Creating mock CSV so CI can continue...")
+        log_event("fetch_failure", error = str(e), error_type = type(e).__name__)
         write_fallback_sample(target_path)
-        print(f"Mock CSV written to {target_path}. CI will pass gracefully.")
 
 
 if __name__ == "__main__":

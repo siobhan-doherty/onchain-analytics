@@ -1,4 +1,17 @@
-{{ config(materialized="table") }}
+{{ config(
+    materialized = "table",
+    contract = {
+        "enforced": true,
+        "checks": [
+            {"name": "not_null", "column": "tx_hash"},
+            {"name": "not_null", "column": "amount_usd"},
+            {"name": "not_null", "column": "evt_index"},
+            {"name": "not_null", "column": "block_time"},
+            {"name": "not_null", "column": "blockchain"},
+            {"name": "not_null", "column": "project"}
+        ]
+    }
+) }}
 
 SELECT
     block_time,

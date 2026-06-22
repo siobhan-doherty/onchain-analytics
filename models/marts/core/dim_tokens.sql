@@ -1,7 +1,17 @@
-{{ config(materialized="table")}}
+{{ config(
+    materialized = "table",
+    contract = {
+        "enforced": true,
+        "checks": [
+            {"name": "not_null", "column": "token_id"},
+            {"name": "unique", "column": "token_id"},
+            {"name": "not_null", "column": "token_symbol"}
+        ]
+    }
+) }}
 
 WITH all_tokens AS (
-    SELECT token_bought_symbol AS token_symbol FROM {{ ref('stg_dex_trades') }}
+    SELECT token_bought_symbol AS token_symbol FROM {{ ref("stg_dex_trades") }}
     UNION
     SELECT token_sold_symbol FROM {{ ref("stg_dex_trades") }}
 )

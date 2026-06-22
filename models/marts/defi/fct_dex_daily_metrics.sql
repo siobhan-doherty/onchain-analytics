@@ -1,4 +1,14 @@
-{{ config(materialized="table") }}
+{{ config(
+    materialized = "table",
+    contract = {
+        "enforced": true,
+        "checks": [
+            {"name": "not_null", "column": "trade_date"},
+            {"name": "not_null", "column": "total_volume_usd"},
+            {"name": "not_null", "column": "unique_traders"}
+        ]
+    }
+) }}
 
 SELECT
     trade_date,

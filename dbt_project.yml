@@ -20,11 +20,22 @@ models:
       columns: true
     staging:
       +materialized: table
+      graph:
+        +materialized: table
     intermediate:
       +materialized: table
+      graph:
+        +materialized: table
     marts:
       +materialized: table
       core:
         +materialized: table
       defi:
         +materialized: table
+
+seeds:
+  onchain_analytics:
+    raw_dex_trades:
+      +column_types:
+        amount_usd: VARCHAR
+      +nullstr: "<nil>"

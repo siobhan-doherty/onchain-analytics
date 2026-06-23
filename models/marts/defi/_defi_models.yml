@@ -1,14 +1,32 @@
 version: 2
-models: 
+models:
   - name: fct_dex_daily_metrics
-    description: ""
+    description: "Daily aggregated metrics per blockchain and DEX"
     columns:
       - name: trade_date
-        description: "Date of trades"
+        data_type: timestamp
+        description: "Date of trades (UTC day)"
+        tests: [not_null]
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+        tests: [not_null]
+      - name: project
+        data_type: text
+        description: "DEX project name"
+        tests: [not_null]
+      - name: number_of_trades
+        data_type: bigint
+        description: "Total number of trades"
         tests: [not_null]
       - name: total_volume_usd
+        data_type: double
         description: "Total USD volume"
         tests: [not_null]
       - name: unique_traders
+        data_type: bigint
         description: "Distinct taker addresses"
         tests: [not_null]
+      - name: avg_trade_size_usd
+        data_type: double
+        description: "Average trade size in USD"

@@ -3,21 +3,56 @@ models:
   - name: fct_dex_trades
     description: "Fact table of individual DEX trades"
     columns:
+      - name: block_time
+        data_type: timestamp
+        description: "UTC timestamp of the trade"
+        tests: [not_null]
       - name: tx_hash
+        data_type: text
         description: "Transaction hash"
         tests: [not_null]
-      - name: amount_usd
-        description: "Trade value in USD"
-        tests: [not_null]
       - name: evt_index
+        data_type: bigint
         description: "Event index inside the transaction"
         tests: [not_null]
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+        tests: [not_null]
+      - name: project
+        data_type: text
+        description: "DEX project name"
+        tests: [not_null]
+      - name: version
+        data_type: text
+        description: "DEX version"
+      - name: token_bought_symbol
+        data_type: text
+        description: "Symbol of token bought"
+      - name: token_sold_symbol
+        data_type: text
+        description: "Symbol of token sold"
+      - name: amount_usd
+        data_type: double
+        description: "Trade value in USD"
+        tests: [not_null]
+      - name: taker
+        data_type: text
+        description: "Taker address"
+      - name: maker
+        data_type: text
+        description: "Maker address"
   - name: dim_tokens
     description: "Dimension table of traded tokens"
     columns:
       - name: token_id
+        data_type: bigint
         description: "Surrogate key"
         tests: [unique, not_null]
       - name: token_symbol
+        data_type: text
         description: "Token symbol"
         tests: [not_null]
+      - name: occurrence_count
+        data_type: bigint
+        description: "Number of times token appears in trades"

@@ -6,6 +6,7 @@ services:
             DUNE_QUERY_ID: ${DUNE_QUERY_ID:-7494336}
             RAW_DEX_TRADES_CSV: /app/data/raw_dex_trades.csv
         volumes:
+            - ./models:/app/models   
             - ./data:/app/data
             - ./target:/app/target
             - ./logs:/app/logs

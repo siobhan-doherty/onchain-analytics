@@ -1,0 +1,7 @@
+version: 2
+sources:
+  - name: dune
+    description: "Raw DEX trades from Dune API loaded into DuckDB."
+    schema: main
+    tables:
+      - name: raw_dex_trades

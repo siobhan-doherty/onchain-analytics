@@ -1,0 +1,16 @@
+version: 2
+models:
+  - name: fct_domain_performance
+    description: "ENS domain registration performance"
+    columns:
+      - name: registration_date
+        data_type: timestamp
+        description: "Date of registration"
+        tests: [not_null]
+      - name: domains_registered
+        data_type: bigint
+        description: "Number of domains registered"
+        tests: [not_null]
+      - name: unique_owners
+        data_type: bigint
+        description: "Number of unique owners"

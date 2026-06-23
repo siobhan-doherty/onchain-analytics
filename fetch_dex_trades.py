@@ -3,6 +3,7 @@ import time
 import requests
 import json
 import logging
+import duckdb
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -17,6 +18,7 @@ def log_event(event: str, **kwargs):
         "timestamp": datetime.now(timezone.utc).isoformat(),
         **kwargs
     }))
+
 
 DUNE_API_KEY = os.getenv("DUNE_API_KEY")
 DUNE_QUERY_ID = int(os.getenv("DUNE_QUERY_ID", "7494336"))
@@ -62,12 +64,27 @@ def fetch_from_dune(query_id: int) -> str:
 
 
 def write_fallback_sample(path: Path) -> None:
-    """Writes minimal mock CSV matching the expected Dune schema."""
+    """Writes minimal mock CSV matching expected Dune schema."""
     mock_csv_content = """block_time,tx_hash,evt_index,blockchain,project,version,token_bought_symbol,token_sold_symbol,amount_usd,taker,maker
 2024-01-01 00:00:00,0xmock,1,ethereum,uniswap,v3,ETH,USDC,1000.0,0xmock_taker,0xmock_maker
 """
     path.write_text(mock_csv_content, encoding = "utf-8")
     log_event("fallback_written", path = str(path))
+
+
+def load_csv_to_duckdb(csv_path: Path) -> None:
+    """Load CSV into DuckDB as raw_dex_trades table."""
+    duckdb_path = os.getenv("DUCKDB_PATH", "/app/data/dex_analytics.duckdb")
+    try:
+        conn = duckdb.connect(duckdb_path)
+        conn.execute(f"""
+            CREATE OR REPLACE TABLE raw_dex_trades AS
+            SELECT * FROM read_csv_auto('{csv_path}')
+        """)
+        conn.close()
+        log_event("duckdb_load_success", path = str(csv_path), db = duckdb_path)
+    except Exception as e:
+        log_event("duckdb_load_failure", error = str(e), error_type = type(e).__name__)
 
 
 def main(output_path: Path | None = None) -> None:
@@ -82,6 +99,9 @@ def main(output_path: Path | None = None) -> None:
     except Exception as e:
         log_event("fetch_failure", error = str(e), error_type = type(e).__name__)
         write_fallback_sample(target_path)
+
+    # always load CSV into DuckDB, whether live or fallback
+    load_csv_to_duckdb(target_path)
 
 
 if __name__ == "__main__":

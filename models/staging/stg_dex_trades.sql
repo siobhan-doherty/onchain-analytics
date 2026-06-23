@@ -12,5 +12,5 @@ SELECT
     TRY_CAST(amount_usd AS DOUBLE) AS amount_usd,
     taker,
     maker
-FROM {{ ref("raw_dex_trades") }}
+FROM "dex_analytics"."main"."raw_dex_trades"
 WHERE TRY_CAST(amount_usd AS DOUBLE) > 0

@@ -35,7 +35,11 @@ models:
 
 seeds:
   onchain_analytics:
-    raw_dex_trades:
+    # raw_dex_trades removed, loaded by fetch_dex_trades.py
+    raw_graph_domains:
       +column_types:
-        amount_usd: VARCHAR
-      +nullstr: "<nil>"
+        domain_id: VARCHAR
+        name: VARCHAR
+        owner_address: VARCHAR
+        created_at: VARCHAR
+        expiry_date: VARCHAR

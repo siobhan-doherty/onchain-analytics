@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: graph
+    description: "Data fetched from The Graph (ENS subgraph)"
+    schema: main
+    tables:
+      - name: raw_graph_domains

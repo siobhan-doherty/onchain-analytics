@@ -1,0 +1,284 @@
+version: 2
+
+models:
+  - name: stg_flipside_transactions
+    description: "Staging model for Flipside transaction data"
+    columns:
+      - name: tx_hash
+        data_type: text
+        description: "Transaction hash"
+        tests: [not_null]
+      - name: block_number
+        data_type: bigint
+        description: "Block number where transaction was included"
+      - name: block_time
+        data_type: timestamp
+        description: "UTC timestamp of the block"
+        tests: [not_null]
+      - name: from_address
+        data_type: text
+        description: "Sender address"
+      - name: to_address
+        data_type: text
+        description: "Recipient address"
+      - name: value_eth
+        data_type: double
+        description: "Transaction value in ETH"
+      - name: value_usd
+        data_type: double
+        description: "Transaction value in USD"
+      - name: gas_used
+        data_type: bigint
+        description: "Gas units used"
+      - name: gas_price
+        data_type: double
+        description: "Gas price in gwei"
+      - name: gas_fee_usd
+        data_type: double
+        description: "Total gas fee in USD"
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+      - name: tx_status
+        data_type: text
+        description: "Transaction status (success, failed, pending)"
+      - name: input_data
+        data_type: text
+        description: "Transaction input data"
+      - name: method_id
+        data_type: text
+        description: "Method signature identifier"
+      - name: contract_address
+        data_type: text
+        description: "Contract address called"
+      - name: last_updated
+        data_type: timestamp
+        description: "Last update timestamp"
+
+  - name: stg_flipside_addresses
+    description: "Staging model for Flipside address metadata"
+    columns:
+      - name: address
+        data_type: text
+        description: "Wallet address"
+        tests: [not_null]
+      - name: address_type
+        data_type: text
+        description: "Address type classification"
+      - name: is_contract
+        data_type: boolean
+        description: "Whether address is a smart contract"
+      - name: is_eoa
+        data_type: boolean
+        description: "Whether address is an EOA"
+      - name: contract_creator
+        data_type: text
+        description: "Address that created the contract"
+      - name: created_at
+        data_type: timestamp
+        description: "Creation timestamp"
+      - name: first_tx_date
+        data_type: date
+        description: "Date of first transaction"
+      - name: last_tx_date
+        data_type: date
+        description: "Date of last transaction"
+      - name: total_tx_count
+        data_type: bigint
+        description: "Total transaction count"
+      - name: total_eth_spent
+        data_type: double
+        description: "Total ETH spent"
+      - name: total_usd_spent
+        data_type: double
+        description: "Total USD spent"
+      - name: active_days
+        data_type: bigint
+        description: "Number of days with activity"
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+      - name: label
+        data_type: text
+        description: "Address label"
+      - name: category
+        data_type: text
+        description: "Address category"
+      - name: last_updated
+        data_type: timestamp
+        description: "Last update timestamp"
+
+  - name: stg_flipside_token_metrics
+    description: "Staging model for Flipside token metrics"
+    columns:
+      - name: token_address
+        data_type: text
+        description: "Token contract address"
+        tests: [not_null]
+      - name: token_symbol
+        data_type: text
+        description: "Token symbol"
+        tests: [not_null]
+      - name: token_name
+        data_type: text
+        description: "Token name"
+      - name: token_decimals
+        data_type: bigint
+        description: "Token decimals"
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+      - name: price_usd
+        data_type: double
+        description: "Current price in USD"
+      - name: price_eth
+        data_type: double
+        description: "Current price in ETH"
+      - name: market_cap_usd
+        data_type: double
+        description: "Market capitalization in USD"
+      - name: volume_24h_usd
+        data_type: double
+        description: "24h trading volume in USD"
+      - name: volume_24h_eth
+        data_type: double
+        description: "24h trading volume in ETH"
+      - name: holders_count
+        data_type: bigint
+        description: "Number of token holders"
+      - name: total_supply
+        data_type: double
+        description: "Total token supply"
+      - name: circulating_supply
+        data_type: double
+        description: "Circulating token supply"
+      - name: token_standard
+        data_type: text
+        description: "Token standard (ERC20, ERC721, etc.)"
+      - name: is_verified
+        data_type: boolean
+        description: "Whether token is verified"
+      - name: category
+        data_type: text
+        description: "Token category"
+      - name: last_updated
+        data_type: timestamp
+        description: "Last update timestamp"
+
+  - name: stg_flipside_dex_trades
+    description: "Staging model for Flipside DEX trade data"
+    columns:
+      - name: trade_id
+        data_type: text
+        description: "Unique trade identifier"
+      - name: tx_hash
+        data_type: text
+        description: "Transaction hash"
+        tests: [not_null]
+      - name: block_number
+        data_type: bigint
+        description: "Block number"
+      - name: block_time
+        data_type: timestamp
+        description: "UTC timestamp of the trade"
+        tests: [not_null]
+      - name: dex_name
+        data_type: text
+        description: "DEX name"
+      - name: dex_version
+        data_type: text
+        description: "DEX version"
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+      - name: token_bought_address
+        data_type: text
+        description: "Address of token bought"
+      - name: token_bought_symbol
+        data_type: text
+        description: "Symbol of token bought"
+      - name: token_bought_amount
+        data_type: double
+        description: "Amount of token bought"
+      - name: token_sold_address
+        data_type: text
+        description: "Address of token sold"
+      - name: token_sold_symbol
+        data_type: text
+        description: "Symbol of token sold"
+      - name: token_sold_amount
+        data_type: double
+        description: "Amount of token sold"
+      - name: amount_usd
+        data_type: double
+        description: "Trade value in USD"
+        tests: [not_null]
+      - name: amount_eth
+        data_type: double
+        description: "Trade value in ETH"
+      - name: taker_address
+        data_type: text
+        description: "Taker address"
+      - name: maker_address
+        data_type: text
+        description: "Maker address"
+      - name: pool_address
+        data_type: text
+        description: "Liquidity pool address"
+      - name: fee_tier
+        data_type: text
+        description: "Pool fee tier"
+      - name: last_updated
+        data_type: timestamp
+        description: "Last update timestamp"
+
+  - name: stg_flipside_protocol_metrics
+    description: "Staging model for Flipside protocol metrics"
+    columns:
+      - name: protocol_id
+        data_type: text
+        description: "Unique protocol identifier"
+        tests: [not_null]
+      - name: protocol_name
+        data_type: text
+        description: "Protocol name"
+      - name: protocol_slug
+        data_type: text
+        description: "URL-friendly protocol slug"
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+      - name: category
+        data_type: text
+        description: "Protocol category"
+      - name: date
+        data_type: date
+        description: "Date of metrics snapshot"
+        tests: [not_null]
+      - name: tvl_usd
+        data_type: double
+        description: "Total Value Locked in USD"
+      - name: volume_usd
+        data_type: double
+        description: "Trading volume in USD"
+      - name: revenue_usd
+        data_type: double
+        description: "Protocol revenue in USD"
+      - name: fees_usd
+        data_type: double
+        description: "Protocol fees in USD"
+      - name: unique_users
+        data_type: bigint
+        description: "Number of unique users"
+      - name: tx_count
+        data_type: bigint
+        description: "Transaction count"
+      - name: active_users
+        data_type: bigint
+        description: "Active user count"
+      - name: new_users
+        data_type: bigint
+        description: "New user count"
+      - name: last_updated
+        data_type: timestamp
+        description: "Last update timestamp"

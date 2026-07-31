@@ -30,6 +30,10 @@ models:
         +materialized: table
       token_transfers:
         +materialized: table
+      token_terminal:
+        +materialized: table
+      flipside:
+        +materialized: table
     marts:
       +materialized: table
       core:
@@ -40,11 +44,17 @@ models:
           +materialized: table
       defi:
         +materialized: table
+      token_terminal:
+        +materialized: table
+      flipside:
+        +materialized: table
     enrichment:
       +materialized: table
       nansen:
         +materialized: table
       token_terminal:
+        +materialized: table
+      flipside:
         +materialized: table
 
 seeds:

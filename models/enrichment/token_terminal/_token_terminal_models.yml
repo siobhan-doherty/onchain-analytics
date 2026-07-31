@@ -1,0 +1,47 @@
+version: 2
+
+models:
+  - name: stg_token_terminal_protocols
+    description: "Staging model for Token Terminal protocol metrics"
+    columns:
+      - name: protocol_id
+        data_type: text
+        description: "Unique identifier for the protocol"
+        tests: [not_null]
+      - name: protocol_name
+        data_type: text
+        description: "Human-readable name of the protocol"
+      - name: protocol_slug
+        data_type: text
+        description: "URL-friendly slug identifier"
+      - name: blockchain
+        data_type: text
+        description: "Blockchain where the protocol operates"
+      - name: category
+        data_type: text
+        description: "Protocol category (DEX, Lending, etc.)"
+      - name: date
+        data_type: date
+        description: "Date of the metrics snapshot"
+        tests: [not_null]
+      - name: revenue_usd
+        data_type: double
+        description: "Protocol revenue in USD"
+      - name: tvl_usd
+        data_type: double
+        description: "Total Value Locked in USD"
+      - name: volume_usd
+        data_type: double
+        description: "Trading volume in USD"
+      - name: unique_users
+        data_type: bigint
+        description: "Number of unique users"
+      - name: tx_count
+        data_type: bigint
+        description: "Transaction count"
+      - name: fees_usd
+        data_type: double
+        description: "Protocol fees in USD"
+      - name: last_updated
+        data_type: timestamp
+        description: "Last update timestamp"

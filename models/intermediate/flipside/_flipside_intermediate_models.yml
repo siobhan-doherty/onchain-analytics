@@ -1,0 +1,169 @@
+version: 2
+
+models:
+  - name: int_flipside_daily_dex_volume
+    description: "Intermediate table aggregating Flipside DEX trade volume by day"
+    columns:
+      - name: trade_date
+        data_type: date
+        description: "Date of trades (UTC day)"
+        tests: [not_null]
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+      - name: dex_name
+        data_type: text
+        description: "DEX name"
+      - name: dex_version
+        data_type: text
+        description: "DEX version"
+      - name: number_of_trades
+        data_type: bigint
+        description: "Total number of trades"
+      - name: total_volume_usd
+        data_type: double
+        description: "Total USD volume"
+        tests: [not_null]
+      - name: total_volume_eth
+        data_type: double
+        description: "Total ETH volume"
+      - name: unique_traders
+        data_type: bigint
+        description: "Distinct taker addresses"
+      - name: unique_pools
+        data_type: bigint
+        description: "Distinct pool addresses"
+      - name: avg_trade_size_usd
+        data_type: double
+        description: "Average trade size in USD"
+      - name: last_updated
+        data_type: timestamp
+        description: "Last update timestamp"
+
+  - name: int_flipside_daily_token_metrics
+    description: "Intermediate table aggregating Flipside token metrics by day"
+    columns:
+      - name: snapshot_date
+        data_type: date
+        description: "Date of the snapshot"
+        tests: [not_null]
+      - name: token_address
+        data_type: text
+        description: "Token contract address"
+      - name: token_symbol
+        data_type: text
+        description: "Token symbol"
+      - name: token_name
+        data_type: text
+        description: "Token name"
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+      - name: avg_price_usd
+        data_type: double
+        description: "Average price in USD"
+      - name: avg_price_eth
+        data_type: double
+        description: "Average price in ETH"
+      - name: avg_market_cap_usd
+        data_type: double
+        description: "Average market capitalization in USD"
+      - name: total_daily_volume_usd
+        data_type: double
+        description: "Total daily volume in USD"
+      - name: avg_holders_count
+        data_type: bigint
+        description: "Average number of holders"
+      - name: avg_total_supply
+        data_type: double
+        description: "Average total supply"
+      - name: last_updated
+        data_type: timestamp
+        description: "Last update timestamp"
+
+  - name: int_flipside_daily_protocol_metrics
+    description: "Intermediate table aggregating Flipside protocol metrics by day"
+    columns:
+      - name: date
+        data_type: date
+        description: "Date of metrics"
+        tests: [not_null]
+      - name: protocol_id
+        data_type: text
+        description: "Unique protocol identifier"
+      - name: protocol_name
+        data_type: text
+        description: "Protocol name"
+      - name: protocol_slug
+        data_type: text
+        description: "URL-friendly protocol slug"
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+      - name: category
+        data_type: text
+        description: "Protocol category"
+      - name: daily_tvl_usd
+        data_type: double
+        description: "Daily Total Value Locked in USD"
+      - name: daily_volume_usd
+        data_type: double
+        description: "Daily trading volume in USD"
+        tests: [not_null]
+      - name: daily_revenue_usd
+        data_type: double
+        description: "Daily protocol revenue in USD"
+      - name: daily_fees_usd
+        data_type: double
+        description: "Daily protocol fees in USD"
+      - name: daily_unique_users
+        data_type: bigint
+        description: "Daily unique users"
+      - name: daily_tx_count
+        data_type: bigint
+        description: "Daily transaction count"
+      - name: daily_active_users
+        data_type: bigint
+        description: "Daily active users"
+      - name: daily_new_users
+        data_type: bigint
+        description: "Daily new users"
+      - name: last_updated
+        data_type: timestamp
+        description: "Last update timestamp"
+
+  - name: int_flipside_daily_address_activity
+    description: "Intermediate table aggregating Flipside address activity by day"
+    columns:
+      - name: activity_date
+        data_type: date
+        description: "Date of activity"
+        tests: [not_null]
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+      - name: unique_addresses
+        data_type: bigint
+        description: "Number of unique addresses"
+        tests: [not_null]
+      - name: total_transactions
+        data_type: bigint
+        description: "Total transaction count"
+      - name: total_eth_spent
+        data_type: double
+        description: "Total ETH spent"
+      - name: total_usd_spent
+        data_type: double
+        description: "Total USD spent"
+      - name: avg_active_days
+        data_type: bigint
+        description: "Average number of active days"
+      - name: contract_count
+        data_type: bigint
+        description: "Number of contract addresses"
+      - name: eoa_count
+        data_type: bigint
+        description: "Number of EOA addresses"
+      - name: last_updated
+        data_type: timestamp
+        description: "Last update timestamp"

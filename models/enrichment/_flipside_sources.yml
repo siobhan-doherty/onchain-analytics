@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: flipside
+    description: "Flipside Crypto API data - onchain transactions, addresses, token data"
+    schema: main
+    tables:
+      - name: raw_flipside_transactions
+        description: "Raw transaction data from Flipside"
+      - name: raw_flipside_addresses
+        description: "Wallet address metadata from Flipside"
+      - name: raw_flipside_token_metrics
+        description: "Token metrics and data from Flipside"
+      - name: raw_flipside_dex_trades
+        description: "DEX trade data from Flipside"
+      - name: raw_flipside_protocol_metrics
+        description: "Protocol-level metrics from Flipside"

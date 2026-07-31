@@ -1,0 +1,91 @@
+version: 2
+
+models:
+  - name: int_token_terminal_daily_protocol_metrics
+    description: "Intermediate table aggregating Token Terminal protocol metrics by day"
+    columns:
+      - name: date
+        data_type: date
+        description: "Trade/activity date"
+        tests: [not_null]
+      - name: protocol_id
+        data_type: text
+        description: "Unique identifier for the protocol"
+        tests: [not_null]
+      - name: protocol_name
+        data_type: text
+        description: "Human-readable name of the protocol"
+      - name: protocol_slug
+        data_type: text
+        description: "URL-friendly slug identifier"
+      - name: blockchain
+        data_type: text
+        description: "Blockchain where the protocol operates"
+      - name: category
+        data_type: text
+        description: "Protocol category (DEX, Lending, etc.)"
+      - name: daily_revenue_usd
+        data_type: double
+        description: "Daily protocol revenue in USD"
+      - name: daily_tvl_usd
+        data_type: double
+        description: "Daily Total Value Locked in USD"
+      - name: daily_volume_usd
+        data_type: double
+        description: "Daily trading volume in USD"
+        tests: [not_null]
+      - name: daily_fees_usd
+        data_type: double
+        description: "Daily protocol fees in USD"
+      - name: daily_unique_users
+        data_type: bigint
+        description: "Daily unique users count"
+      - name: daily_tx_count
+        data_type: bigint
+        description: "Daily transaction count"
+      - name: record_count
+        data_type: bigint
+        description: "Number of source records aggregated"
+      - name: last_updated
+        data_type: timestamp
+        description: "Last update timestamp"
+
+  - name: int_token_terminal_category_aggregates
+    description: "Intermediate table aggregating Token Terminal metrics by category and date"
+    columns:
+      - name: date
+        data_type: date
+        description: "Trade/activity date"
+        tests: [not_null]
+      - name: category
+        data_type: text
+        description: "Protocol category"
+        tests: [not_null]
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+      - name: protocol_count
+        data_type: bigint
+        description: "Number of protocols in category"
+      - name: total_category_revenue_usd
+        data_type: double
+        description: "Total category revenue in USD"
+      - name: total_category_tvl_usd
+        data_type: double
+        description: "Total category TVL in USD"
+      - name: total_category_volume_usd
+        data_type: double
+        description: "Total category volume in USD"
+        tests: [not_null]
+      - name: total_category_fees_usd
+        data_type: double
+        description: "Total category fees in USD"
+      - name: total_unique_users
+        data_type: bigint
+        description: "Total unique users across category"
+      - name: total_tx_count
+        data_type: bigint
+        description: "Total transaction count across category"
+      - name: last_updated
+        data_type: timestamp
+        description: "Last update timestamp"

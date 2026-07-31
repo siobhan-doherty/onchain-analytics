@@ -22,15 +22,29 @@ models:
       +materialized: table
       graph:
         +materialized: table
+      token_transfers:
+        +materialized: table
     intermediate:
       +materialized: table
       graph:
+        +materialized: table
+      token_transfers:
         +materialized: table
     marts:
       +materialized: table
       core:
         +materialized: table
+        token_transfers:
+          +materialized: table
+        enrichment:
+          +materialized: table
       defi:
+        +materialized: table
+    enrichment:
+      +materialized: table
+      nansen:
+        +materialized: table
+      token_terminal:
         +materialized: table
 
 seeds:

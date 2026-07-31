@@ -1,0 +1,164 @@
+version: 2
+
+models:
+  - name: fct_enriched_token_transfers
+    description: "Enriched fact table of token transfers with Nansen wallet and token labels"
+    columns:
+      - name: tx_hash
+        data_type: text
+        description: "Transaction hash"
+        tests: [not_null]
+      - name: block_time
+        data_type: timestamp
+        description: "UTC timestamp of the transfer"
+        tests: [not_null]
+      - name: evt_index
+        data_type: bigint
+        description: "Event index inside the transaction"
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+        tests: [not_null]
+      - name: token_address
+        data_type: text
+        description: "Token contract address"
+      - name: token_symbol
+        data_type: text
+        description: "Token symbol"
+      - name: from_address
+        data_type: text
+        description: "Sender address"
+      - name: to_address
+        data_type: text
+        description: "Recipient address"
+      - name: amount
+        data_type: double
+        description: "Token amount transferred"
+      - name: amount_usd
+        data_type: double
+        description: "Transfer value in USD"
+        tests: [not_null]
+      - name: transfer_date
+        data_type: date
+        description: "Date of transfer (UTC)"
+      - name: from_label
+        data_type: text
+        description: "Nansen label for sender"
+      - name: from_category
+        data_type: text
+        description: "Nansen category for sender"
+      - name: from_is_smart_money
+        data_type: boolean
+        description: "Is sender a smart money address"
+      - name: from_is_sanctioned
+        data_type: boolean
+        description: "Is sender a sanctioned address"
+      - name: to_label
+        data_type: text
+        description: "Nansen label for recipient"
+      - name: to_category
+        data_type: text
+        description: "Nansen category for recipient"
+      - name: to_is_smart_money
+        data_type: boolean
+        description: "Is recipient a smart money address"
+      - name: to_is_sanctioned
+        data_type: boolean
+        description: "Is recipient a sanctioned address"
+      - name: token_category
+        data_type: text
+        description: "Nansen category for token"
+      - name: token_sub_category
+        data_type: text
+        description: "Nansen sub-category for token"
+      - name: token_is_verified
+        data_type: boolean
+        description: "Is token verified by Nansen"
+      - name: token_risk_score
+        data_type: double
+        description: "Nansen risk score for token"
+      - name: transfer_classification
+        data_type: text
+        description: "Classification based on wallet labels"
+      - name: is_labeled_transfer
+        data_type: boolean
+        description: "Both sender and recipient have Nansen labels"
+      - name: processed_at
+        data_type: timestamp
+        description: "When the enrichment was processed"
+
+  - name: dim_enriched_tokens
+    description: "Enriched dimension table of tokens with Nansen data and transfer statistics"
+    columns:
+      - name: token_id
+        data_type: bigint
+        description: "Surrogate key"
+        tests: [unique, not_null]
+      - name: token_symbol
+        data_type: text
+        description: "Token symbol"
+        tests: [not_null]
+      - name: token_address
+        data_type: text
+        description: "Token contract address"
+        tests: [not_null]
+      - name: nansen_token_name
+        data_type: text
+        description: "Token name from Nansen"
+      - name: nansen_category
+        data_type: text
+        description: "Nansen category for token"
+      - name: nansen_sub_category
+        data_type: text
+        description: "Nansen sub-category for token"
+      - name: transfer_count
+        data_type: bigint
+        description: "Total number of transfers"
+      - name: total_transferred
+        data_type: double
+        description: "Total amount transferred"
+      - name: total_volume_usd
+        data_type: double
+        description: "Total USD volume"
+      - name: unique_senders
+        data_type: bigint
+        description: "Number of unique senders"
+      - name: unique_recipients
+        data_type: bigint
+        description: "Number of unique recipients"
+      - name: first_transfer_time
+        data_type: timestamp
+        description: "First transfer timestamp"
+      - name: last_transfer_time
+        data_type: timestamp
+        description: "Last transfer timestamp"
+      - name: market_cap_usd
+        data_type: double
+        description: "Market capitalization from Nansen"
+      - name: price_usd
+        data_type: double
+        description: "Current price from Nansen"
+      - name: volume_24h_usd
+        data_type: double
+        description: "24h volume from Nansen"
+      - name: holders_count
+        data_type: bigint
+        description: "Number of holders from Nansen"
+      - name: is_verified
+        data_type: boolean
+        description: "Is token verified"
+      - name: risk_score
+        data_type: double
+        description: "Nansen risk score"
+      - name: token_risk_category
+        data_type: text
+        description: "Derived risk category"
+      - name: first_transfer_date
+        data_type: date
+        description: "First transfer date"
+      - name: last_transfer_date
+        data_type: date
+        description: "Last transfer date"
+      - name: processed_at
+        data_type: timestamp
+        description: "When enrichment was processed"

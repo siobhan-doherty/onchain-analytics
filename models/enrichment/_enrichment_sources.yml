@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: token_terminal
+    description: "Token Terminal API data - protocol revenue, TVL, metrics"
+    schema: main
+    tables:
+      - name: raw_token_terminal_protocols
+        description: "Protocol metrics from Token Terminal"

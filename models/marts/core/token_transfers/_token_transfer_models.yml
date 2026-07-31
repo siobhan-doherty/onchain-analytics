@@ -1,0 +1,93 @@
+version: 2
+
+models:
+  - name: fct_token_transfers
+    description: "Fact table of individual token transfers (ERC20)"
+    columns:
+      - name: block_time
+        data_type: timestamp
+        description: "UTC timestamp of the transfer"
+        tests: [not_null]
+      - name: tx_hash
+        data_type: text
+        description: "Transaction hash"
+        tests: [not_null]
+      - name: evt_index
+        data_type: bigint
+        description: "Event index inside the transaction"
+        tests: [not_null]
+      - name: blockchain
+        data_type: text
+        description: "Blockchain name"
+        tests: [not_null]
+      - name: token_address
+        data_type: text
+        description: "Token contract address"
+        tests: [not_null]
+      - name: token_symbol
+        data_type: text
+        description: "Token symbol"
+        tests: [not_null]
+      - name: from_address
+        data_type: text
+        description: "Sender address"
+        tests: [not_null]
+      - name: to_address
+        data_type: text
+        description: "Recipient address"
+        tests: [not_null]
+      - name: amount
+        data_type: double
+        description: "Token amount transferred"
+        tests: [not_null]
+      - name: amount_usd
+        data_type: double
+        description: "Transfer value in USD"
+        tests: [not_null]
+      - name: transfer_date
+        data_type: date
+        description: "Date of transfer (UTC)"
+        tests: [not_null]
+
+  - name: dim_tokens_enriched
+    description: "Enriched dimension table of tokens with transfer statistics"
+    columns:
+      - name: token_id
+        data_type: bigint
+        description: "Surrogate key"
+        tests: [unique, not_null]
+      - name: token_symbol
+        data_type: text
+        description: "Token symbol"
+        tests: [not_null]
+      - name: token_address
+        data_type: text
+        description: "Token contract address"
+        tests: [not_null]
+      - name: transfer_count
+        data_type: bigint
+        description: "Total number of transfers for this token"
+      - name: total_transferred
+        data_type: double
+        description: "Total amount of tokens transferred"
+      - name: total_volume_usd
+        data_type: double
+        description: "Total USD volume of all transfers"
+      - name: unique_senders
+        data_type: bigint
+        description: "Number of unique sender addresses"
+      - name: unique_recipients
+        data_type: bigint
+        description: "Number of unique recipient addresses"
+      - name: first_transfer_time
+        data_type: timestamp
+        description: "Timestamp of first transfer"
+      - name: last_transfer_time
+        data_type: timestamp
+        description: "Timestamp of last transfer"
+      - name: first_transfer_date
+        data_type: date
+        description: "Date of first transfer"
+      - name: last_transfer_date
+        data_type: date
+        description: "Date of last transfer"

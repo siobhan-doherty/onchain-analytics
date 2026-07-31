@@ -1,0 +1,113 @@
+import os
+import time
+import requests
+import json
+import logging
+import duckdb
+from pathlib import Path
+from datetime import datetime, timezone
+
+# configure logging
+logging.basicConfig(level = logging.INFO, format = "%(message)s")
+logger = logging.getLogger(__name__)
+
+
+def log_event(event: str, **kwargs):
+    logger.info(json.dumps({
+        "event": event,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        **kwargs
+    }))
+
+
+DUNE_API_KEY = os.getenv("DUNE_API_KEY")
+# Dune Query ID for token transfers, ERC20 transfers
+DUNE_QUERY_ID = int(os.getenv("DUNE_QUERY_ID_TOKEN_TRANSFERS", "3734834"))
+
+
+def _headers() -> dict[str, str]:
+    if not DUNE_API_KEY:
+        raise RuntimeError("DUNE_API_KEY is not set")
+    return {"x-dune-api-key": DUNE_API_KEY}
+
+
+def fetch_from_dune(query_id: int) -> str:
+    """Fetch CSV data from Dune Analytics API."""
+    log_event("fetch_start", query_id = query_id)
+    execute_url = f"https://api.dune.com/api/v1/query/{query_id}/execute"
+    execute_response = requests.post(execute_url, headers = _headers(), timeout = 30)
+    execute_response.raise_for_status()
+    execution_id = execute_response.json()["execution_id"]
+    log_event("execution_started", execution_id = execution_id)
+
+    for _ in range(120):
+        status_url = f"https://api.dune.com/api/v1/execution/{execution_id}/status"
+        status_response = requests.get(status_url, headers = _headers(), timeout = 30)
+        status_response.raise_for_status()
+        state = status_response.json()["state"]
+        if state == "QUERY_STATE_COMPLETED":
+            break
+        if state in {
+            "QUERY_STATE_FAILED",
+            "QUERY_STATE_CANCELLED",
+            "QUERY_STATE_EXPIRED",
+        }:
+            raise RuntimeError(f"Dune execution ended with state={state}")
+        time.sleep(2)
+    else:
+        raise TimeoutError("Timed out waiting for Dune query execution")
+
+    results_url = f"https://api.dune.com/api/v1/execution/{execution_id}/results/csv"
+    results_response = requests.get(results_url, headers = _headers(), timeout = 60)
+    results_response.raise_for_status()
+    log_event("fetch_complete", execution_id = execution_id)
+    return results_response.text
+
+
+def write_fallback_sample(path: Path) -> None:
+    """Writes minimal mock CSV matching expected Dune token transfers schema."""
+    mock_csv_content = """block_time,tx_hash,evt_index,blockchain,token_address,token_symbol,from_address,to_address,amount,amount_usd
+2024-01-01 00:00:00,0xmock_tx_1,1,ethereum,0xToken1Address,USDC,0xFromAddress1,0xToAddress1,1000.0,1000.0
+2024-01-01 00:01:00,0xmock_tx_2,2,ethereum,0xToken2Address,ETH,0xFromAddress2,0xToAddress2,0.5,1500.0
+2024-01-01 00:02:00,0xmock_tx_3,3,ethereum,0xToken1Address,USDC,0xFromAddress3,0xToAddress3,500.0,500.0
+"""
+    path.write_text(mock_csv_content, encoding = "utf-8")
+    log_event("fallback_written", path = str(path))
+
+
+def load_csv_to_duckdb(csv_path: Path) -> None:
+    """Load CSV into DuckDB as raw_token_transfers table."""
+    duckdb_path = os.getenv("DUCKDB_PATH", "/app/data/onchain_analytics.duckdb")
+    try:
+        conn = duckdb.connect(duckdb_path)
+        conn.execute(f"""
+            CREATE OR REPLACE TABLE raw_token_transfers AS
+            SELECT * FROM read_csv_auto('{csv_path}')
+        """)
+        conn.close()
+        log_event("duckdb_load_success", path = str(csv_path), db = duckdb_path)
+    except Exception as e:
+        log_event("duckdb_load_failure", error = str(e), error_type = type(e).__name__)
+
+
+def main(output_path: Path | None = None) -> None:
+    script_dir = Path(__file__).parent
+    target_path = (
+        output_path
+        if output_path is not None
+        else script_dir / "seeds" / "raw_token_transfers.csv"
+    )
+    target_path.parent.mkdir(parents = True, exist_ok = True)
+    try:
+        csv_data = fetch_from_dune(DUNE_QUERY_ID)
+        target_path.write_text(csv_data, encoding = "utf-8")
+        log_event("fetch_success", path = str(target_path))
+    except Exception as e:
+        log_event("fetch_failure", error = str(e), error_type = type(e).__name__)
+        write_fallback_sample(target_path)
+    # always load CSV into DuckDB, whether live or fallback
+    load_csv_to_duckdb(target_path)
+
+
+if __name__ == "__main__":
+    main()

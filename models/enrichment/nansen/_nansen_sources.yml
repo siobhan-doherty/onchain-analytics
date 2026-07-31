@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: nansen
+    description: "Nansen API data - wallet labels, smart money, token metrics"
+    schema: main
+    tables:
+      - name: raw_nansen_labels
+        description: "Wallet address labels from Nansen"
+      - name: raw_nansen_token_metrics
+        description: "Token metrics and classifications from Nansen"

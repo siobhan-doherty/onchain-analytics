@@ -5,3 +5,8 @@ sources:
     schema: main
     tables:
       - name: raw_dex_trades
+  - name: token_transfers
+    description: "Raw ERC20 token transfers from Dune API loaded into DuckDB."
+    schema: main
+    tables:
+      - name: raw_token_transfers
